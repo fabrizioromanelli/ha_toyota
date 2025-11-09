@@ -13,12 +13,13 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import PERCENTAGE, UnitOfLength
+from homeassistant.const import PERCENTAGE, UnitOfLength, UnitOfTime
 from homeassistant.helpers.entity import EntityCategory
 
 from .const import DOMAIN
 from .entity import ToyotaBaseEntity
 from .utils import (
+    _format_minutes_as_hm,
     format_statistics_attributes,
     format_vin_sensor_attributes,
     round_number,
@@ -133,10 +134,38 @@ BATTERY_LEVEL_ENTITY_DESCRIPTION = ToyotaSensorEntityDescription(
     device_class=SensorDeviceClass.BATTERY,
     state_class=SensorStateClass.MEASUREMENT,
     value_fn=lambda vehicle: None
-    if vehicle.dashboard is None
-    else round_number(vehicle.dashboard.battery_level),
+#    if vehicle.dashboard is None
+#    else round_number(vehicle.dashboard.battery_level),
+    if vehicle.electric_status is None
+    else round_number(vehicle.electric_status.battery_level),
     suggested_display_precision=0,
     attributes_fn=lambda vehicle: None,  # noqa : ARG005
+)
+CHARGING_STATUS_DESCRIPTION = ToyotaSensorEntityDescription(
+    key="charging_status",
+    translation_key="charging_status",
+    icon="mdi:car-info",
+    entity_category=EntityCategory.DIAGNOSTIC,
+    device_class=SensorDeviceClass.ENUM,
+    state_class=None,
+    value_fn=lambda vehicle: None
+    if vehicle.electric_status is None
+    else vehicle.electric_status.charging_status,
+    attributes_fn=lambda vehicle: None,  # noqa : ARG005
+)
+REMAINING_CHARGE_TIME_DESCRIPTION = ToyotaSensorEntityDescription(
+    key="remaining_charge_time",
+    translation_key="remaining_charge_time",
+    icon="mdi:timer-sand",
+    entity_category=EntityCategory.DIAGNOSTIC,
+    device_class=SensorDeviceClass.DURATION,
+    state_class=SensorStateClass.MEASUREMENT,
+    value_fn=lambda vehicle: None
+    if vehicle.electric_status is None
+    else vehicle.electric_status.remaining_charge_time,  # (minuti interi)
+    attributes_fn=lambda vehicle: None
+    if vehicle.electric_status is None
+    else _format_minutes_as_hm(vehicle.electric_status.remaining_charge_time),
 )
 BATTERY_RANGE_ENTITY_DESCRIPTION = ToyotaSensorEntityDescription(
     key="battery_range",
@@ -272,6 +301,18 @@ def create_sensor_configurations(metric_values: bool) -> list[dict[str, Any]]:  
             or v.type == "electric",
             "native_unit": PERCENTAGE,
             "suggested_unit": None,
+        },
+        {
+            "description": CHARGING_STATUS_DESCRIPTION,
+            "capability_check": lambda v: True,  # noqa : ARG005
+            "native_unit": None,
+            "suggested_unit": None,
+        },
+        {
+            "description": REMAINING_CHARGE_TIME_DESCRIPTION,
+            "capability_check": lambda v: True,  # noqa : ARG005
+            "native_unit": UnitOfTime.MINUTES,
+            "suggested_unit": UnitOfTime.MINUTES,
         },
         {
             "description": BATTERY_RANGE_ENTITY_DESCRIPTION,

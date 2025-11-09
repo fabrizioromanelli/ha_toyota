@@ -5,7 +5,8 @@ license = "MIT"
 version = "v2.0.16"
 authors = [
             {name = "CM000n", email = "simon.hoerrle@gmail.com"},
-            {name = "deejay1", email = "deejay1@srem.org"}
+            {name = "deejay1", email = "deejay1@srem.org"},
+            {name = "tantrizio", email = "fabrizio.romanelli@gmail.com"}
             ]
 requires-python = '>=3.13,<3.14'
 dynamic = ["dependencies"]
