@@ -52,17 +52,9 @@ class ToyotaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # pylint: dis
             self._brand = user_input[CONF_BRAND]
             unique_id = f"{user_input[CONF_EMAIL].lower()}_{self._brand}"
 
-            # Convert brand selection to API code
-            brand_code = BRAND_API_MAP.get(self._brand, "T")
-
-            _LOGGER.info(
-                "Testing login for %s (brand code: %s)", self._brand, brand_code
-            )
-
             client = MyT(
                 username=user_input[CONF_EMAIL],
                 password=user_input[CONF_PASSWORD],
-                brand=brand_code,  # Pass brand code to API client
             )
 
             await self.async_set_unique_id(unique_id)
