@@ -19,7 +19,7 @@ from homeassistant.helpers.entity import EntityCategory
 from .const import DOMAIN
 from .entity import ToyotaBaseEntity
 from .utils import (
-    _format_minutes_as_hm,
+    format_minutes_as_hm,
     format_statistics_attributes,
     format_vin_sensor_attributes,
     round_number,
@@ -165,7 +165,7 @@ REMAINING_CHARGE_TIME_DESCRIPTION = ToyotaSensorEntityDescription(
     else vehicle.electric_status.remaining_charge_time,  # (minuti interi)
     attributes_fn=lambda vehicle: None
     if vehicle.electric_status is None
-    else _format_minutes_as_hm(vehicle.electric_status.remaining_charge_time),
+    else format_minutes_as_hm(vehicle.electric_status.remaining_charge_time),
 )
 BATTERY_RANGE_ENTITY_DESCRIPTION = ToyotaSensorEntityDescription(
     key="battery_range",

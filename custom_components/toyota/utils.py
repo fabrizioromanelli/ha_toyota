@@ -127,3 +127,18 @@ def format_statistics_attributes(
     }
 
     return attr
+
+def format_minutes_as_hm(minutes: int | None) -> dict[str, any] | None:
+    """Return hours/minutes and a human string from minutes."""
+    if minutes is None:
+        return None
+    try:
+        total = int(minutes)
+    except (TypeError, ValueError):
+        return None
+    hours, mins = divmod(total, 60)
+    return {
+        "hours": hours,
+        "minutes": mins,
+        "human": f"{hours}h {mins:02d}m" if hours else f"{mins}m",
+    }
