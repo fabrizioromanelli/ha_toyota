@@ -23,6 +23,7 @@ from .utils import (
     format_statistics_attributes,
     format_vin_sensor_attributes,
     round_number,
+    convert_battery_to_app_percent
 )
 
 if TYPE_CHECKING:
@@ -134,10 +135,8 @@ BATTERY_LEVEL_ENTITY_DESCRIPTION = ToyotaSensorEntityDescription(
     device_class=SensorDeviceClass.BATTERY,
     state_class=SensorStateClass.MEASUREMENT,
     value_fn=lambda vehicle: None
-#    if vehicle.dashboard is None
-#    else round_number(vehicle.dashboard.battery_level),
     if vehicle.electric_status is None
-    else round_number(vehicle.electric_status.battery_level),
+    else convert_battery_to_app_percent(vehicle.electric_status.battery_level),
     suggested_display_precision=0,
     attributes_fn=lambda vehicle: None,  # noqa : ARG005
 )

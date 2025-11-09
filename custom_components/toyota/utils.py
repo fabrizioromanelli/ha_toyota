@@ -12,6 +12,12 @@ if TYPE_CHECKING:
     from pytoyoda.models.endpoints.vehicle_guid import VehicleGuidModel
     from pytoyoda.models.summary import Summary
 
+def convert_battery_to_app_percent(battery_level: float) -> float:
+    """Convert battery level to app percentage."""
+    API_MIN = 36.9048
+    API_MAX = 100.0
+    percent = (battery_level - API_MIN) / (API_MAX - API_MIN) * 100
+    return max(0, min(100, round(percent)))
 
 def round_number(number: float | None, places: int = 0) -> int | float | None:
     """Round a number if it is not None."""
